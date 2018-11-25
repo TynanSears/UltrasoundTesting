@@ -52,6 +52,8 @@ void loop() {
     sumTop = 0;
     //Move and capture data
     moveRight();
+    Serial.println(mmTop);
+    Serial.println(mmBot);
     moveLeft();
   }
 }
@@ -102,6 +104,10 @@ void get_distances() {
   
     // Read duration til signal, in microseconds
     durationTop = pulseIn(echoPinTop, HIGH);
+
+    if(abs((durationBot/2) - mmBot) > 50 || abs((durationTop/2) - mmTop) > 50){
+        reconfigure();
+    }
    
     // Convert the time into a distance
     mmBot = (durationBot/2) / 2.91; 
@@ -111,9 +117,9 @@ void get_distances() {
     sumBot += mmBot;
     sumTop += mmTop;
 //    Serial.print("Top Dist: ");
-    Serial.println(mmTop);
+//    Serial.println(mmTop);
 //    Serial.print("Bottom Dist: ");
-    Serial.println(mmBot);
+//    Serial.println(mmBot);
   }
 }
 
@@ -126,3 +132,10 @@ void print_to_serial(){
   sumBot = 0; 
   sumTop = 0;
 }
+
+void reconfigure(){
+    for(int k=0; k<100; k++){
+        get_distances();
+    }
+}
+
